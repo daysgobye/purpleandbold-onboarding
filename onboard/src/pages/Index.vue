@@ -1,212 +1,234 @@
 <template>
-<section id="contact">
+  <section id="contact">
     <div class="contact">
-        <div class="Contact__title">
-            <h2 class="section--header">on boarding</h2>
+      <div class="Contact__title">
+        <h2 class="section--header">on boarding</h2>
+      </div>
+      <div class="contact__body">
+        <div class="flex__col contact__body__left">
+          <div class="flex__col transback contact__body__left--name">
+            <label for="name">Name *</label>
+            <input type="text" v-model="messageData.yourName" name="name">
+          </div>
+          <div class="flex__col transback contact__body__left--company">
+            <label for="company">Company</label>
+            <input type="text" v-model="messageData.company" name="company">
+          </div>
+
+          <div class="flex__col transback contact__body__left--account">
+            <transition name="fade">
+              <div v-if="infoPopup.contact.on" class="infopopup">{{ infoPopup.contact.message }}</div>
+            </transition>
+
+            <button class="info" @click="popUp(infoPopup.contact,5000)">?</button>
+            <label for="company">What is your preferred communication method?</label>
+            <select v-model="messageData.contactAccout">
+              <option disabled value>Please select one</option>
+              <!-- <option>Slack</option> -->
+              <option>E-Mail</option>
+              <option>Text Message</option>
+              <option>Discord</option>
+              <option>Skype</option>
+              <option>Slack</option>
+            </select>
+            <span v-show="messageData.contactAccout">
+              <label for="accountName">User name</label>
+              <br>
+              <input name="accoutName" type="text" v-model="messageData.contactAccoutUsername">
+            </span>
+          </div>
+          <div class="flex__col transback contact__body__left--telephone">
+            <label for="Telephone">Phone Number</label>
+            <input type="text" v-model="messageData.telephone" name="Telephone">
+          </div>
+          <div class="flex__col transback contact__body__left--email">
+            <label for="email">E-Mail</label>
+            <input type="text" v-model="messageData.email" name="email">
+          </div>
+          <div class="flex__col transback contact__body__left--details">
+            <transition name="fade">
+              <div v-if="infoPopup.competer.on" class="infopopup">{{ infoPopup.competer.message }}</div>
+            </transition>
+
+            <button class="info" @click="popUp(infoPopup.competer,5000)">?</button>
+            <label>Who are your competitors?</label>
+            <div class="tag">
+              <div class="tag__bubbles" v-for="(tag, index) in comp" :key="index">
+                <p>{{ tag}}</p>
+              </div>
+              <input
+                type="text"
+                placeholder="amazon.com"
+                @keyup.enter="compTag"
+                v-model="customComp"
+              >
+              <button @click="compTag">+</button>
+            </div>
+          </div>
+          <div class="flex__col transback contact__body__left--details">
+            <transition name="fade">
+              <div
+                v-if="infoPopup.inspiration.on"
+                class="infopopup"
+              >{{ infoPopup.inspiration.message }}</div>
+            </transition>
+
+            <button class="info" @click="popUp(infoPopup.inspiration,5000)">?</button>
+            <label>What are some websites you love?</label>
+            <div class="tag">
+              <div
+                class="tag__bubbles"
+                v-for="(insp, index) in inspirationSite"
+                :key="index"
+                @click="addTag(index)"
+              >
+                <p>{{insp}}</p>
+              </div>
+              <input
+                type="text"
+                placeholder="purpleandbold.com"
+                @keyup.enter="inspirationTag"
+                v-model="customInspiration"
+              >
+              <button @click="inspirationTag">+</button>
+              <div class="flex__col">
+                <label for="inspnote">Please describe what you like about these websites:</label>
+                <textarea
+                  name="inspnote"
+                  placeholder="ex. I love how these websites are fast and and almost lead me to important information without me even having to look for it."
+                  v-model="inspirationSiteNotes"
+                  id
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="flex__col transback contact__body__left--account">
+            <label for="company">What's your plan for hosting your website?</label>
+            <select v-model="hosting.option">
+              <option disabled value>Please select one</option>
+              <option>I have a hosting plan or know how to get one and I will provide you with the login credentials.</option>
+              <option>I do not have a hosting plan but know how to get one and will provide you with the login credentials.</option>
+              <option>I will handle this all, just give me a link to my Websites source files.</option>
+              <option>I want to pay Purple and Bold to host my website and handle all this for me.</option>
+              <option>What is hosting and why do I need it?</option>
+            </select>
+            <span v-if="hosting.option == 'I will host it my self and give you logins to do it'">
+              <label for="username">User name:</label>
+              
+              <input name="usernanm" type="text" v-model="hosting.username">
+              <br>
+              <label for="username">passWord:</label>
+              
+              <input name="usernanm" type="text" v-model="hosting.passWord">
+            </span>
+          </div>
         </div>
-        <div class="contact__body">
-            <div class="flex__col contact__body__left">
-                <div class="flex__col transback contact__body__left--name">
-                    <label for="name">Name *</label>
-                    <input type="text" v-model="messageData.yourName" name="name">
-                </div>
-                <div class="flex__col transback contact__body__left--company">
-                    <label for="company">Company</label>
-                    <input type="text" v-model="messageData.company" name="company">
-                </div>
-                
-                <div class="flex__col transback contact__body__left--account">
-                    <transition name="fade">
-                        <div v-if="infoPopup.contact.on" class="infopopup">
-                        {{ infoPopup.contact.message }}
-                        </div>
-                    </transition>
-                    
-                    <button class="info"
-                    @click="popUp(infoPopup.contact,5000)"
-                     >?</button>
-                    <label for="company">Best way to get in contact </label>
-                    <select v-model="messageData.contactAccout">
-                      <option disabled value="">Please select one</option>
-                      <option>Slack</option>
-                      <option>discord</option>
-                      <option>Email</option>
-                      <option>Phone</option>
-                      <option>skype</option>
-                    </select>
-                    <span v-show="messageData.contactAccout">
-                      <label for="accountName">User name</label>
-                      <br>
-                      <input name="accoutName" type="text" v-model="messageData.contactAccoutUsername">
-                    </span>
-                </div>
-                <div  class="flex__col transback contact__body__left--telephone">
-                    <label for="Telephone">Telephone As Fall Back</label>
-                    <input type="text" v-model="messageData.telephone" name="Telephone">
-                </div>
-                <div class="flex__col transback contact__body__left--email">
-                    <label for="email">Email As Fall Back</label>
-                    <input type="text" v-model="messageData.email" name="email">
-                </div>
-                <div class="flex__col transback contact__body__left--details">
-                     <transition name="fade">
-                        <div v-if="infoPopup.competer.on" class="infopopup">
-                        {{ infoPopup.competer.message }}
-                        </div>
-                    </transition>
-                    
-                    <button class="info"
-                    @click="popUp(infoPopup.competer,5000)"
-                     >?</button>
-                    <label> Competer web sites</label>
-                    <div class="tag">
-                       <div class="tag__bubbles" v-for="(tag, index) in comp" :key="index" >
-                            <p>{{ tag}}</p>
-                        </div>
-                        <input type="text" placeholder="amazon.com" @keyup.enter="compTag" v-model="customComp"> 
-                        <button @click="compTag">+</button>
-                    </div>
-                </div>
-                  <div class="flex__col transback contact__body__left--details">
-                       <transition name="fade">
-                            <div v-if="infoPopup.inspiration.on" class="infopopup">
-                            {{ infoPopup.inspiration.message }}
-                            </div>
-                     </transition>
-                    
-                    <button class="info"
-                    @click="popUp(infoPopup.inspiration,5000)"
-                     >?</button>
-                    <label> Inspiration web sites</label>
-                    <div class="tag">
-                       <div class="tag__bubbles" v-for="(insp, index) in inspirationSite" :key="index" @click="addTag(index)">
-                            <p>{{insp}}</p>
-                        </div>
-                        <input type="text" placeholder="purpleandbold.com" @keyup.enter="inspirationTag" v-model="customInspiration">
-                         <button @click="inspirationTag">+</button>
-                         <div class="flex__col">
-                          <label for="inspnote">what is it that you like? about it </label>
-                          <textarea name="inspnote" placeholder="eg I like the nav bar on this site" v-model="inspirationSiteNotes" id="" ></textarea>  
-                         </div>
-                        
-                        
-                    </div>
-                </div>
-                  <div class="flex__col transback contact__body__left--account">
-                    <label for="company">Hosting </label>
-                    <select v-model="hosting.option">
-                      <option disabled value="">Please select one</option>
-                      <option>I will Host it my self and I don't have hosting arangments</option>
-                      <option>I will host it my self I and will take care of everything on my own </option>
-                      <option>I will host it my self and give you logins to do it</option>
-                      <option>I am planing on you Hosting it</option>
-                      <option>I am not sure what Im going to do</option>
-                    </select>
-                    <span v-if="hosting.option == 'I will host it my self and give you logins to do it'">
-                      <label for="username">User name: </label>
-      
-                      <input name="usernanm" type="text" v-model="hosting.username">
-                      <br>
-                      <label for="username">passWord: </label>
-         
-                      <input name="usernanm" type="text" v-model="hosting.passWord">
-                    </span>
-                </div>
+        <div class="flex__col contact__body__right">
+          <div class="flex__col transback contact__body__left--details">
+            <transition name="fade">
+              <div v-if="infoPopup.goals.on" class="infopopup">{{ infoPopup.goals.message }}</div>
+            </transition>
+
+            <button class="info" @click="popUp(infoPopup.goals,5000)">?</button>
+            <label>What do you want our services to accomplish for you?</label>
+            <div class="tag">
+              <div
+                class="tag__bubbles"
+                v-for="(tag, index) in tags"
+                :key="index"
+                @click="addTag(index)"
+              >
+                <p>{{ tag }}</p>
+              </div>
+              <input
+                type="text"
+                placeholder="Enter Your Own"
+                @keyup.enter="addCustomTag"
+                v-model="customTag"
+              >
+              <button @click="addCustomTag">+</button>
             </div>
-            <div class="flex__col contact__body__right">
-            <div class="flex__col transback contact__body__left--details">
-                 <transition name="fade">
-                        <div v-if="infoPopup.goals.on" class="infopopup">
-                        {{ infoPopup.goals.message }}
-                        </div>
-                    </transition>
-                    
-                    <button class="info"
-                    @click="popUp(infoPopup.goals,5000)"
-                     >?</button>
-                    <label> Goals With Your Site</label>
-                    <div class="tag">
-                       <div class="tag__bubbles" v-for="(tag, index) in tags" :key="index" @click="addTag(index)">
-                            <p>{{ tag }}</p>
-                        </div>
-                        <input type="text" placeholder="Enter Your Own" @keyup.enter="addCustomTag" v-model="customTag"> 
-                        <button @click="addCustomTag">+</button>
-                    </div>
-                    <h4>Your Goals</h4>
-                    <div class="tag">
-                        <transition-group name="tags">
-                        <div class="tag__bubbles" v-for="(tag, index) in messageData.pickedTags" :key="index" >
-                            <p>{{ tag }}  </p><button @click="removeTag(index)" class="tag__bubbles--del">x</button>
-                        </div>
-                        </transition-group>
-                    </div>
+            <h4>Your Goals:</h4>
+            <div class="tag">
+              <transition-group name="tags">
+                <div
+                  class="tag__bubbles"
+                  v-for="(tag, index) in messageData.pickedTags"
+                  :key="index"
+                >
+                  <p>{{ tag }}</p>
+                  <button @click="removeTag(index)" class="tag__bubbles--del">x</button>
                 </div>
-                <div class="flex__col transback contact__body__left--color">
-                     <transition name="fade">
-                        <div v-if="infoPopup.colors.on" class="infopopup">
-                        {{ infoPopup.colors.message }}
-                        </div>
-                    </transition>
-                    
-                    <button class="info"
-                    @click="popUp(infoPopup.colors,5000)"
-                     >?</button>
-                    <label for="colors">Brand Colors</label>
-                    <div class="color">
-                      <div class="color__bubble" v-for="(color, index) in colors" :key="index" :style="{background:color}">
-                    </div>
-                    </div>
-                    <div class="contact__body__left--input">
-                      <input type="color" name="colors"  v-model="color">
-                    <button @click="addCustomColor">+</button>
-                    </div>
-                    
-                </div>
-                <div class="flex__col transback contact__body__right--missed">
-                     <transition name="fade">
-                        <div v-if="infoPopup.old.on" class="infopopup">
-                        {{ infoPopup.old.message }}
-                        </div>
-                    </transition>
-                    
-                    <button class="info"
-                    @click="popUp(infoPopup.old,5000)"
-                     >?</button>
-                    <label for="oldSiteLink">Old Site Link</label>
-                    <input type="text" v-model="oldSite" name="oldSiteLink">
-                    <label for="oldSiteNote">What did You Like What Did you Not like</label>
-                    <textarea name="oldSiteNote" placeholder="eg I liked the way the contact page looked on my old site" v-model="oldSiteNotes" id="" cols="30" rows=6></textarea>
-                </div>
-                 <div  class="flex__col transback contact__body__left--telephone">
-                    <label for="logo">Do You have A logo?</label>
-                   <input type="radio" id="yes" value="yes" v-model="logoRadio">
-                        <label for="yes">yes</label>
-                        
-                        <input type="radio" id="no" value="no" v-model="logoRadio">
-                        <label for="no">no</label>
-                        <br>
-                        <div v-if="logoRadio=='yes'"> <p>If you want to use it please email it to contact@purpleAndBold.com <br>
-                        or you can past a link here  </p> 
-                        <input type="text" v-model="logoLink" name="logoLink">
-                        </div>
-                </div>
-                <div class="flex__col transback contact__body__right--missed">
-                    <label for="missed">Did We Miss Anything?</label>
-                    <textarea name="missed" v-model="messageData.missed" id="" cols="30" rows=6></textarea>
-                </div>
+              </transition-group>
             </div>
-        </div> 
-        <div class="contact__send">
+          </div>
+          <div class="flex__col transback contact__body__left--color">
+            <transition name="fade">
+              <div v-if="infoPopup.colors.on" class="infopopup">{{ infoPopup.colors.message }}</div>
+            </transition>
+
+            <button class="info" @click="popUp(infoPopup.colors,5000)">?</button>
+            <label for="colors">Brand Colors</label>
+            <div class="color">
+              <div
+                class="color__bubble"
+                v-for="(color, index) in colors"
+                :key="index"
+                :style="{background:color}"
+              ></div>
+            </div>
+            <div class="contact__body__left--input">
+              <input type="color" name="colors" v-model="color">
+              <button @click="addCustomColor">+</button>
+            </div>
+          </div>
+          <div class="flex__col transback contact__body__right--missed">
+            <transition name="fade">
+              <div v-if="infoPopup.old.on" class="infopopup">{{ infoPopup.old.message }}</div>
+            </transition>
+
+            <button class="info" @click="popUp(infoPopup.old,5000)">?</button>
+            <label for="oldSiteLink">What is the link to your old website?</label>
+            <input type="text" v-model="oldSite" name="oldSiteLink">
+            <label for="oldSiteNote">What did you like and dislike about it?</label>
+            <textarea
+              name="oldSiteNote"
+              placeholder="ex. I didn't like that my customers had to click three times to get to my services page, in fact most couldn't find it. Also a lot of customers complained they couldn't see my hours. I loved that my phone number was easily visible, and I love the green color that matches my logo."
+              v-model="oldSiteNotes"
+              id
+              cols="30"
+              rows="6"
+            ></textarea>
+          </div>
+          <div class="flex__col transback contact__body__left--telephone">
+            <label for="logo">Do you have a logo?</label>
+            <input type="radio" id="yes" value="yes" v-model="logoRadio">
+            <label for="yes">Yes</label>
             
-        <form action="https://formspree.io/posting@purpleandbold.gq"
-            method="POST">
-            
-            <textarea name="message" id="contact__send--message" ref="realmessage" cols="3" rows="1"></textarea>
-            <input type="submit" ref="submit" value="Submit">
+            <input type="radio" id="no" value="no" v-model="logoRadio">
+            <label for="no">No</label>
+            <br>
+            <div v-if="logoRadio=='yes'">
+              <p>If you want to use it please email it to contact@purpleAndBold.com
+                <br>or you can past a link here
+              </p>
+              <input type="text" v-model="logoLink" name="logoLink">
+            </div>
+          </div>
+          <div class="flex__col transback contact__body__right--missed">
+            <label for="missed">Did We Miss Anything?</label>
+            <textarea name="missed" v-model="messageData.missed" id cols="30" rows="6"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="contact__send">
+        <form action="https://formspree.io/posting@purpleandbold.gq" method="POST">
+          <textarea name="message" id="contact__send--message" ref="realmessage" cols="3" rows="1"></textarea>
+          <input type="submit" ref="submit" value="Submit">
         </form>
+      </div>
     </div>
-    </div>
-</section>
+  </section>
 </template>
 <script>
 export default {
@@ -226,7 +248,7 @@ export default {
         contact: {
           on: false,
           message:
-            "just pick the accout you like to use the most. If the service you like is not in there then let us know in the did we miss any thing section and we will take care of it."
+            "Let us know which communication platform/service you prefer, if your preferred method isn't on the list, let us know in the 'Did We Miss Anything Section.'"
         },
         competer: {
           on: false,
@@ -236,12 +258,12 @@ export default {
         inspiration: {
           on: false,
           message:
-            "here you can tell us some thing you like eg 'link to xyz.com - I like the headder on this site and the use of color'. Links dont just have to be to websites you like, maybe a image link to a logo you like or, a link to somthing that gives the right 'vibe' to the reader "
+            "Show us what you like. Try to explain a bit about why you like it, maybe you like the colors, the use of images, or the way the website interacts with you when you use it, let us know."
         },
         goals: {
           on: false,
           message:
-            "there is somthing you are hoping to achive with your website. Its not just a pritty pice of art with you name on it. This is where you can tell us what you are hoping to do with your site, this keeps us on the right path, that way the whole site can be molded around achiveing your goals"
+            "What are your goals? Let us know now so we can help you achieve them."
         },
         colors: {
           on: false,
@@ -251,14 +273,18 @@ export default {
         old: {
           on: false,
           message:
-            "if this is your first site great leave blank but if we are remaking your old site, might as well not mess up the stuff your old site did right, and better yet make sure we are not repeting old mastakes"
+            "If you don't have a website now, leave this blank. If you do have a website, it helps us to see what your current website looks like and what content is on it so we can better plan your next website. Let us know what you like and dislike about your current website."
         }
       },
       inspirationSite: [],
       customInspiration: "",
       inspirationSiteNotes: "",
       inspirationSiteNotesArr: [],
-      tags: ["Increase Sales", "Create A Easy Service For Customors"],
+      tags: [
+        "Create A Beautiful Brand",
+        "Give My Customers Important Information",
+        "Increase Sales"
+      ],
       customTag: "",
       comp: [],
       customComp: "",
@@ -402,8 +428,9 @@ section
     height: auto
     color: $maintextcolor
     // background-image: $gradient
-    background: linear-gradient(135deg, rgba(31,234,214,1) 0%, rgba(10,230,226,1) 0%, rgba(31,234,214,1) 0%, rgba(13,201,129,1) 100%), url("https://www.transparenttextures.com/patterns/vaio.png") 
+    // background: linear-gradient(135deg, rgba(31,234,214,1) 0%, rgba(10,230,226,1) 0%, rgba(31,234,214,1) 0%, rgba(13,201,129,1) 100%), url("https://www.transparenttextures.com/patterns/vaio.png") 
     // background-image: url("https://www.transparenttextures.com/patterns/vaio.png")
+    background: black
     font-family: "avenir", sans-serif
     display: flex
     justify-content: center
